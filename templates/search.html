@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Engine</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+
+</head>
+
+
+<body class="container">
+    <div class="content custom-md-ml-32 ">
+        <div class="flex-container width-4-5 width-md-3-6 margin-left-8">
+            <div>
+    <form method="get" action="{{ url_for('search') }}">
+        <div class="s-box search-s-box content-search">
+            <div>
+                <input type="search" id="default-search" name="search_query" class="s-input">
+                <button type="submit">
+                    <img src="{{ url_for('static', filename='images/search.svg') }}" class="vs-icon border-search">
+                </button>
+            </div>
+
+            <div class="responsive-controls">
+                {% if search_engines %}
+                <!-- Dropdown untuk memilih mesin pencari -->
+                <select name="search_engine" id="search_engine" class="s-btn margin-input">
+                    {% for engine in search_engines %}
+                    {% if engine == search_engine %}
+                    <option value="{{ engine }}" selected>{{ engine }}</option>
+                    {% else %}
+                    <option value="{{ engine }}">{{ engine }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                {% if current_k %}
+                <!-- Input teks untuk jumlah top dokumen -->
+                <input type="number" id="top_documents" name="top_documents" min="1" value="{{ current_k }}"
+                    class="s-btn k-input">
+                {% else %}
+                <!-- Input teks untuk jumlah top dokumen -->
+                <input type="number" id="top_documents" name="top_documents" min="1" value="60" class="s-btn k-input">
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+
+        {% if search_engine == 'rankc'%}
+        <p style="font-size: 1.6em;">Rank C Result : </p>
+            {% if results %}
+            <div id="searchResults">
+                <div class="split">
+                    <div>
+                        <h2>Words:</h2>
+                        <ul>
+                            {% for word in results.words %}
+                            <li style="font-size: 1.4em;">{{ word.word }} ({{ word.fw }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Distinct Terms: {{ results.distinct_terms }}</h2>
+                    </div>
+                </div>
+            
+                <h2 style="margin-top: 1.8rem;">Top Documents:</h2>
+                <ul>
+                    {% for document in results.top_documents %}
+                    <div class="mb-6">
+                        <a href="content/{{ document.file }}" style="font-size: 2em;">
+                            {{ document.title }}
+                        </a>
+                        <div class="flex gap-x-4">
+                            <a href="content/{{ document.file }}" style="font-size: 18px;">{{ document.file }}</a>
+                            <p>Document ID: {{ document.document_id }}</p>
+                            <p>Docno: {{ document.docno }}</p>
+                            <p>Ranked: {{ document.ranked }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <p>No data received</p>
+            {% endif %}
+        {% endif %}
+
+        {% if search_engine == 'swishe'%}
+        <p style="font-size: 1.6em;">Swish-E Result : </p>
+            {% if results %}
+            <div id="searchResults">
+                <div class="split">
+                    <div>
+                        <h2>Search words: {{ results.search_words }}</h2>
+                        <h2>Number of hits: {{ results.number_of_hits }}</h2>
+                    </div>
+                    <div>
+                        <h2>Search time: {{ results.search_time }}</h2>
+                        <h2>Run time: {{ results.run_time }}</h2>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 1.8rem;">Top Documents:</h2>
+                <ul>
+                    {% for document in results.documents %}
+                    <div class="mb-6">
+                        <a href="content/{{document.file_path}}">
+                            {{ document.content }}
+                        </a>
+                        <div class="flex gap-x-4">
+                            <a href="content/{{document.file_path}}" style="font-size: 18px;">{{ document.file_path }}</a>
+                            <p>Ranked: {{ document.rank }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <p>No data received</p>
+            {% endif %}
+        {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Google Beta</title>
+    <!-- <link rel="stylesheet" href="{{url_for('static',filename='')}}"> -->
+    <link rel="stylesheet" href="{{url_for('static',filename='/css/style.css')}}">
+
+</head>
+
+<body>
+    <section class="section-1">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo">
+        <form method="get" action="{{ url_for('search') }}" ><br><br>
+        <div class="s-box">
+            <input type="search" id="default-search" name="search_query" class="s-input-homepage">
+          
+            <img src="{{ url_for('static', filename='images/search.svg') }}" class="search-icon ">
+            
+            <div>
+                {% if search_engines %}
+                <!-- Dropdown untuk memilih mesin pencari -->
+                <select name="search_engine" id="search_engine"
+                    class="s-btn">
+                    {% for engine in search_engines %}
+                    {% if engine == search_engine %}
+                    <option value="{{ engine }}" selected>{{ engine }}</option>
+                    {% else %}
+                    <option value="{{ engine }}">{{ engine }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                {% endif %}
+                {% if current_k %}
+                <!-- Input teks untuk jumlah top dokumen -->
+                <input type="number" id="top_documents" name="top_documents" min="1" value="{{ current_k }}"
+                    class="s-btn k-input">
+                {% else %}
+                <!-- Input teks untuk jumlah top dokumen -->
+                <input type="number" id="top_documents" name="top_documents" min="1" value="60"
+                    class="s-btn k-input">
+                {% endif %}
+            </div>
+            <button type="submit" class="s-btn submit-btn">
+                Search
+            </button>
+        </div>
+        </form>
+    </section>
+</body>
+
+</html>
